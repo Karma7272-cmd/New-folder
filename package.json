@@ -1,10 +1,12 @@
 {
   "name": "esp32-cam-project",
   "version": "1.0.0",
-  "description": "ESP32 CAM embedded coding and web server project",
+  "description": "ESP32 CAM embedded coding and web server project with Vercel Web Interface",
   "main": "index.js",
   "scripts": {
-    "build": "platformio run -e esp32-cam",
+    "build": "mkdir -p dist && cp -r public/* dist/",
+    "start": "npx serve dist",
+    "build:esp32": "platformio run -e esp32-cam",
     "upload": "platformio run -e esp32-cam -t upload",
     "monitor": "platformio device monitor -e esp32-cam --baud 115200",
     "clean": "platformio run -e esp32-cam -t clean",
@@ -14,11 +16,15 @@
     "esp32",
     "embedded",
     "camera",
-    "iot"
+    "iot",
+    "vercel",
+    "fomo",
+    "object-detection"
   ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "platformio": "^6.1.11"
+    "platformio": "^6.1.11",
+    "serve": "^14.2.0"
   }
 }

@@ -1,160 +1,97 @@
-# ESP32 CAM Embedded Coding Project
+# ESP32 CAM Embedded Coding Project & Vercel Web Dashboard
 
-This project provides a complete setup for ESP32 CAM development with web server capabilities.
+This project provides a complete setup for ESP32 CAM development with web server capabilities and a modern front-end web dashboard tailored for **Vercel** deployment.
 
 ## Features
 
-- Camera initialization and configuration
-- WiFi connectivity
-- Web server streaming
-- JPEG image capture
-- Real-time monitoring via serial console
+- **Embedded ESP32-CAM Firmware**: Real-time camera streaming, HTTP WebServer, and FOMO object detection API.
+- **Web Dashboard (Vercel Ready)**: Modern UI for viewing live camera feed, real-time bounding box AI overlay, FPS counter, and detection analytics.
+- **Dual Connection Mode**: Supports connecting directly to a physical ESP32-CAM on your local network/IP or operating in an interactive Demo/Standalone mode.
+- **Vercel Deployable**: Includes `vercel.json` and static asset bundle ready for 1-click Vercel deployment.
 
-## Hardware Requirements
+---
 
-- ESP32-CAM board
-- USB to Serial adapter (TTL)
-- Micro USB cable for power
-- WiFi network
+## 🌐 Deploying the Web Dashboard to Vercel
 
-## Software Installation
+### Method 1: Deploy via Vercel CLI
 
-### 1. Prerequisites
+1. Install the Vercel CLI (if not already installed):
+   ```bash
+   npm i -g vercel
+   ```
+2. Run the deployment command from the project root:
+   ```bash
+   vercel
+   ```
+3. Follow the prompts to complete the deployment.
 
-Ensure you have installed:
+### Method 2: Deploy via GitHub & Vercel Dashboard
+
+1. Push this repository to GitHub/GitLab/Bitbucket.
+2. Go to [Vercel Dashboard](https://vercel.com/new).
+3. Import this repository.
+4. Vercel will automatically detect the settings from `vercel.json` and `package.json`.
+5. Click **Deploy**.
+
+---
+
+## 🔌 Connecting Vercel Web Interface to ESP32-CAM
+
+1. Flash your ESP32-CAM using PlatformIO / Arduino IDE with the source code in `src/main.cpp`.
+2. Connect the ESP32-CAM to your local Wi-Fi.
+3. Note the IP address printed in the Serial Monitor (e.g. `192.168.1.105`).
+4. Open your deployed Vercel web application URL.
+5. In the top-right header, enter your ESP32-CAM IP address into the **Device Address** box and click **Connect**.
+6. Switch from **Demo Stream** to **Live Device** mode to view live camera streams and detection metrics from your embedded hardware!
+
+> **Note on CORS / Mixed Content**: When accessing a local HTTP ESP32 IP address from an HTTPS Vercel domain, ensure your browser allows mixed content, or use a secure tunnel (such as Ngrok or LocalTunnel) pointing to your local ESP32 IP.
+
+---
+
+## 🛠️ Software Installation & PlatformIO
+
+### Prerequisites
+
 - Python 3.6+
-- Node.js 12+
+- Node.js 16+
 - Git
 
-### 2. Install PlatformIO
+### Build Commands
 
-PlatformIO is already installed globally. To verify:
+- **Build Vercel Web Assets**:
+  ```bash
+  npm run build
+  ```
+- **Build ESP32 Firmware**:
+  ```bash
+  npm run build:esp32
+  ```
+- **Upload to ESP32**:
+  ```bash
+  npm run upload
+  ```
+- **Monitor Serial Output**:
+  ```bash
+  npm run monitor
+  ```
 
-```bash
-platformio --version
-```
+---
 
-### 3. Install Project Dependencies
-
-```bash
-npm install
-```
-
-## Configuration
-
-### WiFi Setup
-
-Edit `src/main.cpp` and update the WiFi credentials:
-
-```cpp
-const char* ssid = "YOUR_SSID";
-const char* password = "YOUR_PASSWORD";
-```
-
-### Board Selection
-
-The project is configured for ESP32-CAM. Verify in `platformio.ini`:
-
-```ini
-board = esp32-camera
-```
-
-## Building and Uploading
-
-### Build the project:
-
-```bash
-npm run build
-```
-
-### Upload to ESP32:
-
-```bash
-npm run upload
-```
-
-Make sure:
-- ESP32 is connected via USB
-- Device appears in Device Manager (COMx port)
-- Drivers are installed (CH340 or FTDI depending on adapter)
-
-### Monitor Serial Output:
-
-```bash
-npm run monitor
-```
-
-## Web Access
-
-1. After upload completes, the ESP32 will connect to your WiFi
-2. Open the serial monitor to see the IP address
-3. Access the web server: `http://<IP_ADDRESS>`
-4. The page displays live camera feed
-5. Click "Refresh" to capture new frames
-
-## Troubleshooting
-
-### Failed to Connect to COM Port
-
-- Check Device Manager for the correct COM port
-- Verify USB cable is properly connected
-- Ensure drivers are installed (CH340 drivers: https://sparks.gogo.co.nz/ch340.html)
-
-### Camera Initialization Failed
-
-- Verify all camera pin connections
-- Check power supply (5V, at least 500mA)
-- Ensure correct board selection
-
-### WiFi Connection Issues
-
-- Verify SSID and password are correct
-- Check if network is 2.4GHz (ESP32 doesn't support 5GHz)
-- Ensure router has WiFi enabled
-
-### Image Quality Issues
-
-- Adjust `jpeg_quality` in `main.cpp` (0-63, lower = better quality)
-- Adjust `frame_size` for resolution (FRAMESIZE_VGA, FRAMESIZE_SVGA, etc.)
-
-## Port Information
-
-- Web Server: Port 80
-- Serial Monitor: 115200 baud
-
-## Project Structure
+## 📁 Project Structure
 
 ```
 .
+├── public/                # Web Dashboard static files (HTML/CSS/JS)
+│   ├── index.html
+│   ├── style.css
+│   └── app.js
 ├── src/
-│   └── main.cpp           # Main sketch
+│   └── main.cpp           # ESP32 CAM C++ Sketch
+├── vercel.json            # Vercel deployment configuration
 ├── platformio.ini         # PlatformIO configuration
 ├── package.json           # Node.js scripts
-└── README.md             # This file
+└── README.md              # Project documentation
 ```
-
-## References
-
-- [ESP32 Camera GitHub](https://github.com/espressif/esp32-camera)
-- [PlatformIO Documentation](https://docs.platformio.org/)
-- [ESP32 Official Docs](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/)
-
-## Library Documentation
-
-### Key Libraries Used
-
-1. **esp32-camera**: Official Espressif camera library
-2. **ArduinoJson**: JSON processing
-3. **WebSockets**: Real-time communication
-4. **ESP8266-OLED**: Display support (optional)
-
-## Next Steps
-
-1. Customize the web interface in the HTML response
-2. Add image processing functionality
-3. Implement motion detection
-4. Add data logging to SD card
-5. Implement OTA updates
 
 ## License
 
