@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESP32-CAM | FOMO AI Live Object Detection</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header Navigation -->
+    <header class="navbar">
+      <div class="logo-container">
+        <span class="icon">📷</span>
+        <div class="logo-text">
+          <h1>ESP32-CAM <span class="badge">FOMO AI</span></h1>
+          <p>Embedded Edge Object Detection Web Interface</p>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <div class="ip-config-box">
+          <label for="deviceIp">Device Address:</label>
+          <input type="text" id="deviceIp" placeholder="e.g. 192.168.1.100 or localhost" value="">
+          <button id="connectBtn" class="btn btn-sm btn-primary">Connect</button>
+        </div>
+        <div class="status-badge" id="connectionStatus">
+          <span class="dot offline"></span>
+          <span id="statusText">Demo / Standalone Mode</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="dashboard-grid">
+      <!-- Left Column: Video Feed & Live Controls -->
+      <section class="card stream-card">
+        <div class="card-header">
+          <h2><span class="dot-live" id="streamDot"></span> Live Camera Feed</h2>
+          <div class="mode-toggle">
+            <button id="modeDemoBtn" class="btn btn-xs active">Demo Stream</button>
+            <button id="modeLiveBtn" class="btn btn-xs">Live Device</button>
+          </div>
+        </div>
+
+        <div class="viewport-container" id="viewport">
+          <img id="streamImage" src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80" alt="Camera Stream" crossorigin="anonymous">
+          <canvas id="overlayCanvas"></canvas>
+          <div class="stream-overlay-info">
+            <span id="fpsCounter">FPS: 0</span>
+            <span id="resolutionBadge">VGA (640x480)</span>
+          </div>
+        </div>
+
+        <div class="control-panel">
+          <button id="scanBtn" class="btn btn-danger btn-lg">📸 SCAN NOW</button>
+          <button id="autoToggleBtn" class="btn btn-success btn-lg active">✓ AUTO SCAN: ON</button>
+          <button id="flashToggleBtn" class="btn btn-secondary btn-lg">⚡ FLASH LED</button>
+        </div>
+      </section>
+
+      <!-- Right Column: Real-time Detections & Analytics -->
+      <section class="card analytics-card">
+        <div class="card-header">
+          <h2>📊 Real-Time Detection Analytics</h2>
+          <span class="badge badge-info" id="lastUpdated">Updated just now</span>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-box">
+            <span class="metric-label">Objects Detected</span>
+            <span class="metric-value" id="detCount">0</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">Average Confidence</span>
+            <span class="metric-value" id="avgConfidence">0%</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">Inference Speed</span>
+            <span class="metric-value" id="inferenceTime">~85 ms</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">System Memory (PSRAM)</span>
+            <span class="metric-value">4.0 MB OK</span>
+          </div>
+        </div>
+
+        <div class="detections-list-container">
+          <h3>Detected Classes</h3>
+          <ul id="detectionsList" class="detections-list">
+            <li class="empty-state">No objects currently detected. Click "SCAN NOW" or enable Auto Scan.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Bottom Full-Width Section: Embedded Device Info & Pinouts -->
+      <section class="card info-card span-2">
+        <div class="card-header">
+          <h2>🛠️ Embedded Setup & Hardware Reference</h2>
+        </div>
+        <div class="info-content-grid">
+          <div class="info-block">
+            <h3>⚡ Quick Deploy Guide (Vercel + ESP32)</h3>
+            <ol class="setup-steps">
+              <li>Upload the firmware in <code>src/main.cpp</code> to your ESP32-CAM via PlatformIO / Arduino IDE.</li>
+              <li>Connect your ESP32-CAM to your Wi-Fi network and note down its assigned IP address from the Serial Monitor.</li>
+              <li>Enter your ESP32-CAM local IP address or public URL in the <strong>Device Address</strong> field at the top right of this page and click <strong>Connect</strong>.</li>
+              <li>If hosting this site on Vercel (HTTPS) while your ESP32 is on HTTP, ensure CORS is enabled on the device or use a proxy tunnel like Ngrok for remote access.</li>
+            </ol>
+          </div>
+
+          <div class="info-block">
+            <h3>📌 ESP32-CAM AI Pinout Map</h3>
+            <div class="table-responsive">
+              <table class="pin-table">
+                <thead>
+                  <tr>
+                    <th>Signal</th>
+                    <th>GPIO Pin</th>
+                    <th>Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>PWDN</td><td>GPIO 32</td><td>Power Down</td></tr>
+                  <tr><td>XCLK</td><td>GPIO 0</td><td>External Clock</td></tr>
+                  <tr><td>SIOD / SIOC</td><td>GPIO 26 / 27</td><td>SCCB I2C Data/Clock</td></tr>
+                  <tr><td>VSYNC / HREF</td><td>GPIO 25 / 23</td><td>Vertical/Horizontal Sync</td></tr>
+                  <tr><td>PCLK</td><td>GPIO 22</td><td>Pixel Clock</td></tr>
+                  <tr><td>Flash LED</td><td>GPIO 4</td><td>High-intensity Illumination</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>ESP32-CAM Embedded AI System | Deployed with ❤️ on <strong>Vercel</strong></p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
