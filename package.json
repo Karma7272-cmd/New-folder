@@ -1,0 +1,24 @@
+{
+  "name": "esp32-cam-project",
+  "version": "1.0.0",
+  "description": "ESP32 CAM embedded coding and web server project",
+  "main": "index.js",
+  "scripts": {
+    "build": "platformio run -e esp32-cam",
+    "upload": "platformio run -e esp32-cam -t upload",
+    "monitor": "platformio device monitor -e esp32-cam --baud 115200",
+    "clean": "platformio run -e esp32-cam -t clean",
+    "install-libs": "platformio lib install"
+  },
+  "keywords": [
+    "esp32",
+    "embedded",
+    "camera",
+    "iot"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "platformio": "^6.1.11"
+  }
+}
